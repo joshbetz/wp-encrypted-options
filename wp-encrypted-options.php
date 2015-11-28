@@ -18,6 +18,17 @@ class WP_Encrypted_Options {
 	const METHOD = 'aes256';
 	const IV_LENGTH = 16;
 
+	function __construct() {
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+	}
+
+	function admin_notices() {
+		if ( empty( WPEO_KEY ) ) {
+			// TODO: Add link to documentation
+			echo '<div class="error"><p><strong>Warning:</strong> Empty <code>WPEO_KEY</code>.</p></div>';
+		}
+	}
+
 	static function encrypt( $value ) {
 		$iv = substr( bin2hex( openssl_random_pseudo_bytes( self::IV_LENGTH ) ), 0, self::IV_LENGTH );
 		$value = openssl_encrypt( $value, self::METHOD, md5( WPEO_KEY ), false, $iv );
@@ -34,6 +45,8 @@ class WP_Encrypted_Options {
 		return openssl_decrypt( $value, self::METHOD, md5( WPEO_KEY ), false, $iv );
 	}
 }
+
+new WP_Encrypted_Options;
 
 function wpeo_add_option( $option, $value ) {
 	$value = maybe_serialize( $value );
