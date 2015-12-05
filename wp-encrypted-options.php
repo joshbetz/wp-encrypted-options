@@ -48,6 +48,11 @@ class WP_Encrypted_Options {
 
 new WP_Encrypted_Options;
 
+function wpeo_encrypt( $value ) {
+	$value = maybe_serialize( $value );
+	return WP_Encrypted_Options::encrypt( $value );
+}
+
 function wpeo_add_option( $option, $value ) {
 	$value = maybe_serialize( $value );
 	$value = WP_Encrypted_Options::encrypt( $value );
